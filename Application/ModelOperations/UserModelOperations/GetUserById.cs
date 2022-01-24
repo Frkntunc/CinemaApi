@@ -17,19 +17,26 @@ namespace Application.ModelOperations.UserModelOperations
             _userService = userService;
         }
 
-        public async Task<UserViewModel> Handle()
+        public async Task<UserDetailViewModel> Handle()
         {
             var user = await _userService.GetUserById(Id);
             if (user is null)
                 throw new InvalidOperationException("Böyle bir kullanıcı yok.");
 
-            UserViewModel userViewModel = new UserViewModel();
+            UserDetailViewModel userViewModel = new UserDetailViewModel();
             userViewModel.FirstName = user.FirstName;
             userViewModel.LastName = user.LastName;
             userViewModel.Email = user.Email;
 
             return userViewModel;
         }
+    }
+
+    public class UserDetailViewModel
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
     }
 
     

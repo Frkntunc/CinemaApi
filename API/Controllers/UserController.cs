@@ -29,21 +29,19 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int Id)
+        public async Task<IActionResult> GetUserById(int id)
         {
             GetUserById getUser = new GetUserById(_userService);
-            getUser.Id = Id;
-
+            getUser.Id = id;
             try
             {
                 var result = await getUser.Handle();
-                return Ok();
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpPost]
@@ -54,7 +52,7 @@ namespace API.Controllers
             try
             {
                 await addUser.Handle();
-                return Ok();
+                return Ok("Kullanıcı eklendi.");
             }
             catch (Exception ex)
             {
@@ -62,30 +60,40 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser(User user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserViewModel user)
         {
-            var updatedUser = await _userService.GetUserById(user.ID);
+            UpdateUser updateUser = new UpdateUser(_userService);
+            updateUser.user = user;
+            updateUser.Id = id;
 
-            if (updatedUser != null)
+            try
             {
-                await _userService.UpdateUser(user);
-                return Ok("Müşteri güncellendi.");
+                await updateUser.Handle();
+                return Ok("Kullanıcı güncellendi.");
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteUser(int Id)
         {
-            var deletedUser = await _userService.GetUserById(Id);
-
-            if (deletedUser!=null)
+            DeleteUser deleteUser = new DeleteUser(_userService);
+            deleteUser.Id = Id;
+            try
             {
-                await _userService.DeleteUser(deletedUser);
-                return Ok("Müşteri Silindi");
+                await deleteUser.Handle();
+                return Ok("Kullanıcı silindi");
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }
