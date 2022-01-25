@@ -1,4 +1,5 @@
 ﻿using Application.Abstract;
+using AutoMapper;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,24 +12,17 @@ namespace Application.ModelOperations.UserModelOperations
     public class GetUsers
     {
         private readonly IUserService _userService;
-        public GetUsers(IUserService userService)
+        private readonly IMapper _mapper;
+        public GetUsers(IUserService userService,IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         public async Task<List<UserViewModel>> Handle()
         {
             var userList = await _userService.GetAllUsers();
-            List<UserViewModel> showedUsers = new List<UserViewModel>();
-            foreach (var item in userList)
-            {
-                showedUsers.Add(new UserViewModel
-                {
-                    FirstName = item.FirstName,
-                    LastName = item.LastName,
-                    Email = item.Email
-                }) ;
-            }
+            List<UserViewModel> showedUsers = _mapper.Map<List<UserViewModel>>(userList);
             return showedUsers;
         }
     }

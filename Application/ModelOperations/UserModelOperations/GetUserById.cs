@@ -1,4 +1,5 @@
 ﻿using Application.Abstract;
+using AutoMapper;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,11 @@ namespace Application.ModelOperations.UserModelOperations
     {
         public int Id { get; set; }
         private readonly IUserService _userService;
-        public GetUserById(IUserService userService)
+        private readonly IMapper _mapper;
+        public GetUserById(IUserService userService,IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         public async Task<UserDetailViewModel> Handle()
@@ -23,11 +26,7 @@ namespace Application.ModelOperations.UserModelOperations
             if (user is null)
                 throw new InvalidOperationException("Böyle bir kullanıcı yok.");
 
-            UserDetailViewModel userViewModel = new UserDetailViewModel();
-            userViewModel.FirstName = user.FirstName;
-            userViewModel.LastName = user.LastName;
-            userViewModel.Email = user.Email;
-
+            var userViewModel = _mapper.Map<UserDetailViewModel>(user);
             return userViewModel;
         }
     }

@@ -17,6 +17,11 @@ using Application.Abstract;
 using Application.Concrete;
 using Infrastructure.Contracts.Repository.Abstract;
 using Infrastructure.Contracts.Repository.Concrete;
+using System.Reflection;
+using Application.Mappings;
+using API.Extensions;
+using Core.LoggerServices.Common;
+using Core.LoggerServices;
 
 namespace API
 {
@@ -32,8 +37,13 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IUserService, UserManager>();
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserManager>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddSingleton<ILoggerService, DatabaseLogger>();
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(typeof(MappingProfile));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -56,6 +66,8 @@ namespace API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseExceptionMiddlaware();
 
             app.UseEndpoints(endpoints =>
             {

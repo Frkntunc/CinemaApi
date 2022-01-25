@@ -1,4 +1,5 @@
 ﻿using Application.Abstract;
+using AutoMapper;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace Application.ModelOperations.UserModelOperations
     {
         public CreateUserModel createUserModel { get; set; }
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public AddUser(IUserService userService)
+        public AddUser(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         public async Task Handle()
@@ -25,12 +28,7 @@ namespace Application.ModelOperations.UserModelOperations
             if (user != null)
                 throw new InvalidOperationException("Böyle bir kullanıcı var");
 
-            user = new User();
-            user.FirstName = createUserModel.FirstName;
-            user.LastName = createUserModel.LastName;
-            user.Email = createUserModel.Email;
-            user.Password = createUserModel.Password;
-
+            user = _mapper.Map<User>(createUserModel);
             await _userService.AddUser(user);
         }
 

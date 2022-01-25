@@ -1,5 +1,7 @@
 ﻿using Application.Abstract;
+using Application.ValidationRules.UserValidationRules;
 using Domain.Entities;
+using FluentValidation;
 using Infrastructure.Contracts.Repository.Abstract;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,6 @@ namespace Application.Concrete
     public class UserManager : IUserService
     {
         private readonly IUserRepository _userRepository;
-
         public UserManager(IUserRepository userRepository)
         {
             _userRepository = userRepository;
@@ -20,7 +21,7 @@ namespace Application.Concrete
 
         public async Task AddUser(User user)
         {
-           await _userRepository.Add(user);
+            await _userRepository.Add(user);
         }
 
         public async Task DeleteUser(User user)
