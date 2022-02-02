@@ -1,6 +1,6 @@
 ﻿using Application.Abstract;
 using Application.ValidationRules.UserValidationRules;
-using Domain.Entities;
+using Domain.Entities.Authentications;
 using FluentValidation;
 using Infrastructure.Contracts.Repository.Abstract;
 using System;
@@ -47,6 +47,20 @@ namespace Application.Concrete
         public async Task UpdateUser(User user)
         {
             await _userRepository.Update(user);
+        }
+
+        public async Task<bool> CheckPassword(string email, string password)
+        {
+            var user = await _userRepository.Get(u => u.Email == email);
+            if (user.Password == password)
+                return true;
+
+            return false;
+        }
+
+        public async Task<List<string>> GetRoles(User user)
+        {
+            return await _userRepository.GetUserRoles(user);
         }
     }
 }

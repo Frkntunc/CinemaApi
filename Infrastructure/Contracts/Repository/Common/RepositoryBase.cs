@@ -11,49 +11,52 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Contracts.Repository.Common
 {
-    public class RepositoryBase<TEntity, TContext> : IRepository<TEntity> where TEntity : EntityBase where TContext : DbContext, new()
+    public class RepositoryBase<TEntity> : IRepository<TEntity> where TEntity : EntityBase
     {
+
+        protected readonly AppDbContext _dbContext;
+
+        public RepositoryBase(AppDbContext dbContext)
+        {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
+
         public async Task Add(TEntity entity)
         {
-            using (var _context=new TContext())
-            {
-                _context.Set<TEntity>().Add(entity);
-                await _context.SaveChangesAsync();
-            }
+
+            _dbContext.Set<TEntity>().Add(entity);
+            await _dbContext.SaveChangesAsync();
+
         }
 
         public async Task Delete(TEntity entity)
         {
-            using (var _context = new TContext())
-            {
-                _context.Set<TEntity>().Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+
+            _dbContext.Set<TEntity>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
+
         }
 
         public async Task<TEntity> Get(Expression<Func<TEntity, bool>> filter)
         {
-            using (var _context = new TContext())
-            {
-                return await _context.Set<TEntity>().SingleOrDefaultAsync(filter);
-            }
+
+            return await _dbContext.Set<TEntity>().SingleOrDefaultAsync(filter);
+
         }
 
         public async Task<List<TEntity>> GetAll(Expression<Func<TEntity, bool>> filter = null)
         {
-            using (var _context = new TContext())
-            {
-                return await _context.Set<TEntity>().ToListAsync();
-            }
+
+            return await _dbContext.Set<TEntity>().ToListAsync();
+
         }
 
         public async Task Update(TEntity entity)
         {
-            using (var _context = new TContext())
-            {
-                _context.Set<TEntity>().Update(entity);
-                await _context.SaveChangesAsync();
-            }
+
+            _dbContext.Set<TEntity>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+
         }
     }
 }

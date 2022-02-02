@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Authentications;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,22 @@ namespace Infrastructure.Persistence
 {
     public class AppDbContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=.\sqlexpress;Database=CinemaDB;uid=sa;pwd=123");
+
         }
 
         public DbSet<Film> Films { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Poster> Posters { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+            modelBuilder.Entity<UserRole>().HasNoKey();
         }
     }
 }

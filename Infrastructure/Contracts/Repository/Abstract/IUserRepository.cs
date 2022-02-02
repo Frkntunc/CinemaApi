@@ -1,5 +1,5 @@
 ﻿using Application.Contracts.Repository;
-using Domain.Entities;
+using Domain.Entities.Authentications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +10,6 @@ namespace Infrastructure.Contracts.Repository.Abstract
 {
     public interface IUserRepository : IRepository<User>
     {
+        Task<List<string>> GetUserRoles(User user);
     }
 }

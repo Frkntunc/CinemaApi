@@ -48,18 +48,18 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] CreateUserModel user)
-        {
-            AddUser addUser = new AddUser(_userService, _mapper);
-            AddUserValidator validator = new AddUserValidator();
-            addUser.createUserModel = user;
+        //[HttpPost]
+        //public async Task<IActionResult> AddUser([FromBody] CreateUserModel user)
+        //{
+        //    AddUser addUser = new AddUser(_userService, _mapper);
+        //    AddUserValidator validator = new AddUserValidator();
+        //    addUser.createUserModel = user;
 
-            await validator.ValidateAndThrowAsync(user);
-            await addUser.Handle();
+        //    await validator.ValidateAndThrowAsync(user);
+        //    await addUser.Handle();
 
-            return Ok("User added.");
-        }
+        //    return Ok("User added.");
+        //}
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserViewModel user)

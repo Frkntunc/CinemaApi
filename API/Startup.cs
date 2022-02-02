@@ -3,11 +3,13 @@ using Application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,8 @@ using Application.Mappings;
 using API.Extensions;
 using Core.LoggerServices.Common;
 using Core.LoggerServices;
+using Application.Setting;
+using Domain.Entities.Authentications;
 
 namespace API
 {
@@ -37,12 +41,29 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationServices();
+
+            services.AddInfrastructureService(Configuration);
+
             services.AddScoped<IUserService, UserManager>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<ILoggerService, DatabaseLogger>();
 
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddAutoMapper(typeof(MappingProfile));
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            //services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(Startup));
+
+            services.Configure<JwtSettings>(Configuration.GetSection("JWT"));
+            var jwt = Configuration.GetSection("JWT").Get<JwtSettings>();
+
+            //services.AddIdentity<User, Role>(options =>
+            //{
+            //    options.Password.RequiredLength = 8;
+            //    options.Password.RequireNonAlphanumeric = true;
+            //    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
+            //    options.Lockout.MaxFailedAccessAttempts = 5;
+
+            //}).AddEntityFrameworkStores<AppDbContext>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -64,6 +85,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

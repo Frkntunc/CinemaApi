@@ -1,6 +1,7 @@
-﻿using Application.ModelOperations.UserModelOperations;
+﻿using Application.ModelOperations.Authentications;
+using Application.ModelOperations.UserModelOperations;
 using AutoMapper;
-using Domain.Entities;
+using Domain.Entities.Authentications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Application.Mappings
             CreateMap<CreateUserModel,User>();
             CreateMap<User,UserDetailViewModel>();
             CreateMap<User,UserViewModel>();
+            CreateMap<User, UserModel>().ReverseMap();
         }
     }
 }
